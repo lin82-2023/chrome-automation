@@ -1,0 +1,45 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "chrome-agent-core"
+version = "0.1.0"
+description = "Chrome browser automation SDK with CDP, Stealth, Session, and AI Agent toolkit"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+    { name = "nexq" },
+]
+keywords = ["chrome", "automation", "cdp", "agent", "browser", "ai"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Operating System :: MacOS",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Internet :: WWW/HTTP :: Browsers",
+]
+
+dependencies = [
+    "websockets>=12.0",      # CDP WebSocket（异步）
+    "websocket-client>=1.7", # CDP WebSocket（同步，cdp/_engine.py 内部使用）
+    "requests>=2.31",        # CDP HTTP / list tabs
+    "httpx>=0.27",           # LLM Provider HTTP 调用
+    "rich>=13.7",            # CLI 彩色输出 / 进度条
+    "tomli>=2.0;python_version<'3.11'",  # 配置文件解析
+]
+
+[project.scripts]
+chrome-agent = "chrome_agent_core.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/nexq/chrome-agent"
+Repository = "https://github.com/nexq/chrome-agent"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/chrome_agent_core"]

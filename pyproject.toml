@@ -1,0 +1,65 @@
+[project]
+name = "chrome-agent-workspace"
+version = "0.1.0"
+description = "Chrome Automation + AI Agent monorepo"
+requires-python = ">=3.10"
+dependencies = [
+    "chrome-agent-core",
+    "chrome-research",
+]
+
+[tool.uv.workspace]
+members = ["packages/core", "packages/research"]
+
+[tool.uv.sources]
+chrome-agent-core = { workspace = true }
+chrome-research   = { workspace = true }
+
+# ─── 开发依赖（适用于整个工作区） ────────────────────────────────────────────
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+    "pytest-mock>=3.12",
+    "ruff>=0.6",
+    "mypy>=1.10",
+]
+
+# ─── Ruff 配置（lint + format） ─────────────────────────────────────────────
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+extend-exclude = [
+    "_legacy",
+    "__pycache__",
+    ".venv",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+# E501 行长由 format 控制；其余忽略项为历史代码遗留，逐步收紧。
+ignore = [
+    "E501",  # line too long
+    "E402",  # module-level import not at top of file（迁移后的少量历史代码）
+    "E722",  # bare except（旧 cdp/session 代码中存在）
+    "F841",  # unused local variable
+    "B007",  # unused loop control variable
+    "B904",  # raise from（旧 execute.py 内单点）
+]
+
+# ─── Mypy 配置 ──────────────────────────────────────────────────────────────
+[tool.mypy]
+python_version = "3.10"
+strict_optional = true
+ignore_missing_imports = true
+exclude = ["_legacy", "tests/"]
+
+# ─── pytest 配置 ────────────────────────────────────────────────────────────
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["packages/core/tests", "packages/research/tests"]
+markers = [
+    "integration: 需要真实 Chrome + API Key 的集成测试（默认跳过，pytest -m integration 显式触发）",
+    "slow: 慢速测试",
+]
+addopts = "-m 'not integration' -ra"

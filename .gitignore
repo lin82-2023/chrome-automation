@@ -1,0 +1,74 @@
+# ─── Python ──────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+*.egg
+.installed.cfg
+build/
+dist/
+develop-eggs/
+downloads/
+eggs/
+.eggs/
+parts/
+sdist/
+wheels/
+share/python-wheels/
+MANIFEST
+
+# ─── 虚拟环境 / 包管理 ───────────────────────────────────────────────────
+.venv/
+venv/
+env/
+ENV/
+.python-version
+# uv lock 是否提交看团队约定；本仓库默认提交 uv.lock 以锁定依赖
+# uv.lock
+
+# ─── 缓存 ────────────────────────────────────────────────────────────────
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.tox/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+*.cover
+.cache
+nosetests.xml
+
+# ─── IDE / 编辑器 ────────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.qoder/
+
+# ─── 操作系统 ────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ─── 项目本地实验区（含敏感日志、实验脚本）─────────────────────────────
+.scratch/
+*.log
+
+# ─── 用户数据 / 凭据 ─────────────────────────────────────────────────────
+.env
+.env.*
+*.pem
+*.key
+secrets/
+# Chrome 受控实例的 user-data-dir 默认在 ~/.chrome-automation/，不会进仓库
+# 但仍标注规则避免误提交：
+chrome-profile/
+chrome-user-data/
+
+# ─── 其他 ────────────────────────────────────────────────────────────────
+*.tmp
+*.bak
+.history/

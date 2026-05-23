@@ -1,0 +1,39 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "chrome-research"
+version = "0.1.0"
+description = "Multi-source research agent built on chrome-agent-core"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+    { name = "nexq" },
+]
+keywords = ["research", "agent", "chrome", "ai", "llm"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+dependencies = [
+    "chrome-agent-core",   # 工作区内部依赖（uv.sources 已配置）
+    "rich>=13.7",
+]
+
+[project.scripts]
+chrome-research = "chrome_research.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/nexq/chrome-agent"
+Repository = "https://github.com/nexq/chrome-agent"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/chrome_research"]

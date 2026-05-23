@@ -1,0 +1,78 @@
+name: publish
+
+# PyPI 发布工作流（预留）。
+# 触发条件：推送形如 v*.*.* 的 tag。
+# 同时构建并发布 chrome-agent-core 与 chrome-research 两个包。
+# 默认使用 PyPI Trusted Publishing（OIDC），无需在仓库配置 API token；
+# 也可改为 ${{ secrets.PYPI_API_TOKEN }} 模式（注释中给出）。
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "构建但不发布到 PyPI"
+        required: false
+        default: "true"
+
+jobs:
+  build:
+    name: Build distributions
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        package:
+          - name: chrome-agent-core
+            path: packages/core
+          - name: chrome-research
+            path: packages/research
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install 3.12
+
+      - name: Build ${{ matrix.package.name }}
+        working-directory: ${{ matrix.package.path }}
+        run: uv build
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-${{ matrix.package.name }}
+          path: ${{ matrix.package.path }}/dist/*
+
+  publish:
+    name: Publish to PyPI
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event.inputs.dry_run == 'false'
+    environment:
+      name: pypi
+      url: https://pypi.org/p/chrome-agent-core
+    permissions:
+      id-token: write  # PyPI Trusted Publishing 需要
+    strategy:
+      fail-fast: false
+      matrix:
+        package: [chrome-agent-core, chrome-research]
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist-${{ matrix.package }}
+          path: dist/
+
+      - name: Publish to PyPI (Trusted Publishing)
+        uses: pypa/gh-action-pypi-publish@release/v1
+        # 如改用 token 模式，移除 permissions.id-token 并启用：
+        # with:
+        #   password: ${{ secrets.PYPI_API_TOKEN }}
